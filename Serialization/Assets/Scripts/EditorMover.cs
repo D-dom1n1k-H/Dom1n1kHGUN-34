@@ -10,13 +10,15 @@ namespace DefaultNamespace
 		private float _currentDelay;
 		
 		//todo comment: Что произойдёт, если _delay > _duration?
+		// Записи положения объекта просто не произойдёт
 		private float _delay = 0.5f;
 		private float _duration = 5f;
 
 		private void Start()
 		{
-			//todo comment: Почему этот поиск производится здесь, а не в начале метода Update?
-			_save = GetComponent<PositionSaver>();
+            //todo comment: Почему этот поиск производится здесь, а не в начале метода Update?
+            // Потому-что достаточно один раз присвоить компонент PositionSaver, а не каждый кадр
+            _save = GetComponent<PositionSaver>();
 			_save.Records.Clear();
 		}
 
@@ -29,9 +31,10 @@ namespace DefaultNamespace
 				Debug.Log($"<b>{name}</b> finished", this);
 				return;
 			}
-			
-			//todo comment: Почему не написать (_delay -= Time.deltaTime;) по аналогии с полем _duration?
-			_currentDelay -= Time.deltaTime;
+
+            //todo comment: Почему не написать (_delay -= Time.deltaTime;) по аналогии с полем _duration?
+            // Если написать так, то значение _delay будет уменьшаться до нуля и записи будут происходить слишком часто
+            _currentDelay -= Time.deltaTime;
 			if (_currentDelay <= 0f)
 			{
 				_currentDelay = _delay;
@@ -39,6 +42,7 @@ namespace DefaultNamespace
 				{
 					Position = transform.position,
 					//todo comment: Для чего сохраняется значение игрового времени?
+					// Вероятно, для будующей интерполяции
 					Time = Time.time,
 				});
 			}

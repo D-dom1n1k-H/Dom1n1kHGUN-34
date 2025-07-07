@@ -7,20 +7,24 @@ namespace DefaultNamespace
 {
 	public class PositionSaver : MonoBehaviour
 	{
+		[Serializable]
 		public struct Data
 		{
 			public Vector3 Position;
 			public float Time;
 		}
-
+		[SerializeField]
 		private TextAsset _json;
 
 		public List<Data> Records { get; private set; }
 
 		private void Awake()
 		{
-			//todo comment: Что будет, если в теле этого условия не сделать выход из метода?
-			if (_json == null)
+
+
+            //todo comment: Что будет, если в теле этого условия не сделать выход из метода?
+            // Будет ошибка NullReferenceException, т.к. _json будет равен null
+            if (_json == null)
 			{
 				gameObject.SetActive(false);
 				Debug.LogError("Please, create TextAsset and add in field _json");
@@ -28,21 +32,24 @@ namespace DefaultNamespace
 			}
 			
 			JsonUtility.FromJsonOverwrite(_json.text, this);
-			//todo comment: Для чего нужна эта проверка (что она позволяет избежать)?
-			if (Records == null)
+            //todo comment: Для чего нужна эта проверка (что она позволяет избежать)?
+            // Она позволяет избежать ошибки что коллекция Records не существует, а так она просто создаётся один раз и используется в дальнейшем
+            if (Records == null)
 				Records = new List<Data>(10);
 		}
 
 		private void OnDrawGizmos()
 		{
-			//todo comment: Зачем нужны эти проверки (что они позволляют избежать)?
-			if (Records == null || Records.Count == 0) return;
+            //todo comment: Зачем нужны эти проверки (что они позволляют избежать)?
+            // Позволяют избежать ошибки NullReferenceException, если в коллекции нет данных и нечего не будет рисоватся
+            if (Records == null || Records.Count == 0) return;
 			var data = Records;
 			var prev = data[0].Position;
 			Gizmos.color = Color.green;
 			Gizmos.DrawWireSphere(prev, 0.3f);
-			//todo comment: Почему итерация начинается не с нулевого элемента?
-			for (int i = 1; i < data.Count; i++)
+            //todo comment: Почему итерация начинается не с нулевого элемента?
+            // Потомуч-то нулевой элемент это стартовая точка, от которой рисуется линия
+            for (int i = 1; i < data.Count; i++)
 			{
 				var curr = data[i].Position;
 				Gizmos.DrawWireSphere(curr, 0.3f);
@@ -55,10 +62,12 @@ namespace DefaultNamespace
 		[ContextMenu("Create File")]
 		private void CreateFile()
 		{
-			//todo comment: Что происходит в этой строке?
-			var stream = File.Create(Path.Combine(Application.dataPath, "Path.txt"));
-			//todo comment: Подумайте для чего нужна эта строка? (а потом проверьте догадку, закомментировав) 
-			stream.Dispose();
+            //todo comment: Что происходит в этой строке?
+            // Создаётся файл Path.txt в папке Assets, Aplication.dataPath - это путь к папке Assets
+            var stream = File.Create(Path.Combine(Application.dataPath, "Path.txt"));
+            //todo comment: Подумайте для чего нужна эта строка? (а потом проверьте догадку, закомментировав) 
+            // Догадка: Dispoce кажется переводится как освободить/выбрасить, поэтому логично было-бы что эта строка удаляет данные из файла
+            stream.Dispose();
 			UnityEditor.AssetDatabase.Refresh();
 			//В Unity можно искать объекты по их типу, для этого используется префикс "t:"
 			//После нахождения, Юнити возвращает массив гуидов (которые в мета-файлах задаются, например)
@@ -69,15 +78,17 @@ namespace DefaultNamespace
 				var path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
 				//Этой командой можно загрузить сам ассет
 				var asset = UnityEditor.AssetDatabase.LoadAssetAtPath<TextAsset>(path);
-				//todo comment: Для чего нужны эти проверки?
-				if(asset != null && asset.name == "Path")
+                //todo comment: Для чего нужны эти проверки?
+                // Типичная проверка на NullReferenceException и имя файла чтобы убедиться что мы нашли именно тот ассет, который нам нужен
+                if (asset != null && asset.name == "Path")
 				{
 					_json = asset;
 					UnityEditor.EditorUtility.SetDirty(this);
 					UnityEditor.AssetDatabase.SaveAssets();
 					UnityEditor.AssetDatabase.Refresh();
-					//todo comment: Почему мы здесь выходим, а не продолжаем итерироваться?
-					return;
+                    //todo comment: Почему мы здесь выходим, а не продолжаем итерироваться?
+                    // Потому-что мы уже нашли нужный ассет
+                    return;
 				}
 			}
 		}
