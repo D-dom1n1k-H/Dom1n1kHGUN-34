@@ -8,16 +8,23 @@ namespace DefaultNamespace
 	{
 		private PositionSaver _save;
 		private float _currentDelay;
-		
+
 		//todo comment: Что произойдёт, если _delay > _duration?
 		// Записи положения объекта просто не произойдёт
+		[SerializeField ,Range(0.2f, 1.0f)]
 		private float _delay = 0.5f;
+		[SerializeField, Min(0.2f)]
 		private float _duration = 5f;
 
 		private void Start()
 		{
             //todo comment: Почему этот поиск производится здесь, а не в начале метода Update?
             // Потому-что достаточно один раз присвоить компонент PositionSaver, а не каждый кадр
+			if (_duration < _delay)
+			{
+				_duration = _delay * 5;
+			}
+
             _save = GetComponent<PositionSaver>();
 			_save.Records.Clear();
 		}

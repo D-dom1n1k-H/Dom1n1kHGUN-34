@@ -8,14 +8,14 @@ namespace DefaultNamespace
 	{
 		private PositionSaver _save;
 
-		private int _index;
-		private PositionSaver.Data _prev;
-		private float _duration;
+	     private int _index;
+         private PositionSaver.Data _prev;
+         private float _duration;
 
 		private void Start()
 		{
             ////todo comment: зачем нужны эти проверки?
-            //// Проверки избегают ошибки NullReferenceException, если компонент PositionSaver не был добавлен или в нём нет записей
+            //// Проверки избегают ошибки на null, если компонент PositionSaver не был добавлен или в нём нет записей
             if (!TryGetComponent(out _save) || _save.Records.Count == 0)
 			{
 				Debug.LogError("Records incorrect value", this);

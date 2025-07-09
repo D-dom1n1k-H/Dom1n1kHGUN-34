@@ -354,6 +354,7 @@
 -analyzer:"C:/Program Files/Unity/Hub/Editor/2022.3.42f1/Editor/Data/Tools/Unity.SourceGenerators/Unity.SourceGenerators.dll"
 "Assets/Scripts/EditorMover.cs"
 "Assets/Scripts/PositionSaver.cs"
+"Assets/Scripts/ReadOnlyAttribute.cs"
 "Assets/Scripts/ReplayMover.cs"
 -langversion:9.0
 /deterministic

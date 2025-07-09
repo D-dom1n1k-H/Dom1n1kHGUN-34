@@ -13,10 +13,11 @@ namespace DefaultNamespace
 			public Vector3 Position;
 			public float Time;
 		}
-		[SerializeField]
+		[SerializeField ,ReadOnly, Tooltip("Для заполнения этого поля нужно воспользоваться контекстным меню в инспекторе и командой “Create File”")]
 		private TextAsset _json;
 
-		public List<Data> Records { get; private set; }
+		[SerializeField, HideInInspector]
+		public List<Data> Records;
 
 		private void Awake()
 		{
@@ -67,6 +68,7 @@ namespace DefaultNamespace
             var stream = File.Create(Path.Combine(Application.dataPath, "Path.txt"));
             //todo comment: Подумайте для чего нужна эта строка? (а потом проверьте догадку, закомментировав) 
             // Догадка: Dispoce кажется переводится как освободить/выбрасить, поэтому логично было-бы что эта строка удаляет данные из файла
+            // Ответ: Dispose завершает работу с файлом, созданным через File.Create()
             stream.Dispose();
 			UnityEditor.AssetDatabase.Refresh();
 			//В Unity можно искать объекты по их типу, для этого используется префикс "t:"
@@ -93,10 +95,23 @@ namespace DefaultNamespace
 			}
 		}
 
+		[Serializable]
+		class Wrapper 
+		{ 
+			public List<PositionSaver.Data> Records;
+        }
 		private void OnDestroy()
 		{
-			//todo logic...
-		}
+			if (Records != null && Records.Count > 0)
+			{
+				var wrapper = new Wrapper { Records = Records };
+				string path = UnityEditor.AssetDatabase.GetAssetPath(_json);
+				var json = JsonUtility.ToJson(wrapper, true);
+
+				File.WriteAllText(path, json);
+				UnityEditor.AssetDatabase.Refresh();
+            }	
+        }
 #endif
 	}
 }
