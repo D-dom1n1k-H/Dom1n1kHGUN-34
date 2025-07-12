@@ -4,7 +4,7 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 26
-  productGUID: 0349665f45e4ff44183bf0bb692a868a
+  productGUID: ae606bf611862bb4185273e805d10f1b
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   AndroidEnableSustainedPerformanceMode: 0
@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: DefaultCompany
-  productName: Serialization
+  productName: Serialzitation
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -677,14 +677,14 @@ PlayerSettings:
   apiCompatibilityLevelPerPlatform: {}
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: Serialization
+  metroPackageName: Serialzitation
   metroPackageVersion: 
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
   metroCertificateIssuer: 
   metroCertificateNotAfter: 0000000000000000
-  metroApplicationDescription: Serialization
+  metroApplicationDescription: Serialzitation
   wsaImages: {}
   metroTileShortName: 
   metroTileShowName: 0
@@ -754,10 +754,10 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 0
   windowsGamepadBackendHint: 0
-  cloudProjectId: ed459458-5635-457d-8503-0b46bbb7d4b0
+  cloudProjectId: 745897ec-78ca-48e2-9633-f2fd4842e74d
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: Serialization 2025-07-01_16-37-30
+  projectName: Serialzitation
   organizationId: haurylik
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0

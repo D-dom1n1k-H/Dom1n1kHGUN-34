@@ -1,117 +1,117 @@
-п»їusing System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
 namespace DefaultNamespace
 {
-	public class PositionSaver : MonoBehaviour
-	{
-		[Serializable]
-		public struct Data
-		{
-			public Vector3 Position;
-			public float Time;
-		}
-		[SerializeField ,ReadOnly, Tooltip("Р”Р»СЏ Р·Р°РїРѕР»РЅРµРЅРёСЏ СЌС‚РѕРіРѕ РїРѕР»СЏ РЅСѓР¶РЅРѕ РІРѕСЃРїРѕР»СЊР·РѕРІР°С‚СЊСЃСЏ РєРѕРЅС‚РµРєСЃС‚РЅС‹Рј РјРµРЅСЋ РІ РёРЅСЃРїРµРєС‚РѕСЂРµ Рё РєРѕРјР°РЅРґРѕР№ вЂњCreate FileвЂќ")]
-		private TextAsset _json;
-
-		[SerializeField, HideInInspector]
-		public List<Data> Records;
-
-		private void Awake()
-		{
-
-
-            //todo comment: Р§С‚Рѕ Р±СѓРґРµС‚, РµСЃР»Рё РІ С‚РµР»Рµ СЌС‚РѕРіРѕ СѓСЃР»РѕРІРёСЏ РЅРµ СЃРґРµР»Р°С‚СЊ РІС‹С…РѕРґ РёР· РјРµС‚РѕРґР°?
-            // Р‘СѓРґРµС‚ РѕС€РёР±РєР° NullReferenceException, С‚.Рє. _json Р±СѓРґРµС‚ СЂР°РІРµРЅ null
-            if (_json == null)
-			{
-				gameObject.SetActive(false);
-				Debug.LogError("Please, create TextAsset and add in field _json");
-				return;
-			}
-			
-			JsonUtility.FromJsonOverwrite(_json.text, this);
-            //todo comment: Р”Р»СЏ С‡РµРіРѕ РЅСѓР¶РЅР° СЌС‚Р° РїСЂРѕРІРµСЂРєР° (С‡С‚Рѕ РѕРЅР° РїРѕР·РІРѕР»СЏРµС‚ РёР·Р±РµР¶Р°С‚СЊ)?
-            // РћРЅР° РїРѕР·РІРѕР»СЏРµС‚ РёР·Р±РµР¶Р°С‚СЊ РѕС€РёР±РєРё С‡С‚Рѕ РєРѕР»Р»РµРєС†РёСЏ Records РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚, Р° С‚Р°Рє РѕРЅР° РїСЂРѕСЃС‚Рѕ СЃРѕР·РґР°С‘С‚СЃСЏ РѕРґРёРЅ СЂР°Р· Рё РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РІ РґР°Р»СЊРЅРµР№С€РµРј
-            if (Records == null)
-				Records = new List<Data>(10);
-		}
-
-		private void OnDrawGizmos()
-		{
-            //todo comment: Р—Р°С‡РµРј РЅСѓР¶РЅС‹ СЌС‚Рё РїСЂРѕРІРµСЂРєРё (С‡С‚Рѕ РѕРЅРё РїРѕР·РІРѕР»Р»СЏСЋС‚ РёР·Р±РµР¶Р°С‚СЊ)?
-            // РџРѕР·РІРѕР»СЏСЋС‚ РёР·Р±РµР¶Р°С‚СЊ РѕС€РёР±РєРё NullReferenceException, РµСЃР»Рё РІ РєРѕР»Р»РµРєС†РёРё РЅРµС‚ РґР°РЅРЅС‹С… Рё РЅРµС‡РµРіРѕ РЅРµ Р±СѓРґРµС‚ СЂРёСЃРѕРІР°С‚СЃСЏ
-            if (Records == null || Records.Count == 0) return;
-			var data = Records;
-			var prev = data[0].Position;
-			Gizmos.color = Color.green;
-			Gizmos.DrawWireSphere(prev, 0.3f);
-            //todo comment: РџРѕС‡РµРјСѓ РёС‚РµСЂР°С†РёСЏ РЅР°С‡РёРЅР°РµС‚СЃСЏ РЅРµ СЃ РЅСѓР»РµРІРѕРіРѕ СЌР»РµРјРµРЅС‚Р°?
-            // РџРѕС‚РѕРјСѓС‡-С‚Рѕ РЅСѓР»РµРІРѕР№ СЌР»РµРјРµРЅС‚ СЌС‚Рѕ СЃС‚Р°СЂС‚РѕРІР°СЏ С‚РѕС‡РєР°, РѕС‚ РєРѕС‚РѕСЂРѕР№ СЂРёСЃСѓРµС‚СЃСЏ Р»РёРЅРёСЏ
-            for (int i = 1; i < data.Count; i++)
-			{
-				var curr = data[i].Position;
-				Gizmos.DrawWireSphere(curr, 0.3f);
-				Gizmos.DrawLine(prev, curr);
-				prev = curr;
-			}
-		}
-		
-#if UNITY_EDITOR
-		[ContextMenu("Create File")]
-		private void CreateFile()
-		{
-            //todo comment: Р§С‚Рѕ РїСЂРѕРёСЃС…РѕРґРёС‚ РІ СЌС‚РѕР№ СЃС‚СЂРѕРєРµ?
-            // РЎРѕР·РґР°С‘С‚СЃСЏ С„Р°Р№Р» Path.txt РІ РїР°РїРєРµ Assets, Aplication.dataPath - СЌС‚Рѕ РїСѓС‚СЊ Рє РїР°РїРєРµ Assets
-            var stream = File.Create(Path.Combine(Application.dataPath, "Path.txt"));
-            //todo comment: РџРѕРґСѓРјР°Р№С‚Рµ РґР»СЏ С‡РµРіРѕ РЅСѓР¶РЅР° СЌС‚Р° СЃС‚СЂРѕРєР°? (Р° РїРѕС‚РѕРј РїСЂРѕРІРµСЂСЊС‚Рµ РґРѕРіР°РґРєСѓ, Р·Р°РєРѕРјРјРµРЅС‚РёСЂРѕРІР°РІ) 
-            // Р”РѕРіР°РґРєР°: Dispoce РєР°Р¶РµС‚СЃСЏ РїРµСЂРµРІРѕРґРёС‚СЃСЏ РєР°Рє РѕСЃРІРѕР±РѕРґРёС‚СЊ/РІС‹Р±СЂР°СЃРёС‚СЊ, РїРѕСЌС‚РѕРјСѓ Р»РѕРіРёС‡РЅРѕ Р±С‹Р»Рѕ-Р±С‹ С‡С‚Рѕ СЌС‚Р° СЃС‚СЂРѕРєР° СѓРґР°Р»СЏРµС‚ РґР°РЅРЅС‹Рµ РёР· С„Р°Р№Р»Р°
-            // РћС‚РІРµС‚: Dispose Р·Р°РІРµСЂС€Р°РµС‚ СЂР°Р±РѕС‚Сѓ СЃ С„Р°Р№Р»РѕРј, СЃРѕР·РґР°РЅРЅС‹Рј С‡РµСЂРµР· File.Create()
-            stream.Dispose();
-			UnityEditor.AssetDatabase.Refresh();
-			//Р’ Unity РјРѕР¶РЅРѕ РёСЃРєР°С‚СЊ РѕР±СЉРµРєС‚С‹ РїРѕ РёС… С‚РёРїСѓ, РґР»СЏ СЌС‚РѕРіРѕ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РїСЂРµС„РёРєСЃ "t:"
-			//РџРѕСЃР»Рµ РЅР°С…РѕР¶РґРµРЅРёСЏ, Р®РЅРёС‚Рё РІРѕР·РІСЂР°С‰Р°РµС‚ РјР°СЃСЃРёРІ РіСѓРёРґРѕРІ (РєРѕС‚РѕСЂС‹Рµ РІ РјРµС‚Р°-С„Р°Р№Р»Р°С… Р·Р°РґР°СЋС‚СЃСЏ, РЅР°РїСЂРёРјРµСЂ)
-			var guids = UnityEditor.AssetDatabase.FindAssets("t:TextAsset");
-			foreach (var guid in guids)
-			{
-				//Р­С‚РѕР№ РєРѕРјР°РЅРґРѕР№ РјРѕР¶РЅРѕ РїРѕР»СѓС‡РёС‚СЊ РїСѓС‚СЊ Рє Р°СЃСЃРµС‚Сѓ С‡РµСЂРµР· РµРіРѕ РіСѓРёРґ
-				var path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
-				//Р­С‚РѕР№ РєРѕРјР°РЅРґРѕР№ РјРѕР¶РЅРѕ Р·Р°РіСЂСѓР·РёС‚СЊ СЃР°Рј Р°СЃСЃРµС‚
-				var asset = UnityEditor.AssetDatabase.LoadAssetAtPath<TextAsset>(path);
-                //todo comment: Р”Р»СЏ С‡РµРіРѕ РЅСѓР¶РЅС‹ СЌС‚Рё РїСЂРѕРІРµСЂРєРё?
-                // РўРёРїРёС‡РЅР°СЏ РїСЂРѕРІРµСЂРєР° РЅР° NullReferenceException Рё РёРјСЏ С„Р°Р№Р»Р° С‡С‚РѕР±С‹ СѓР±РµРґРёС‚СЊСЃСЏ С‡С‚Рѕ РјС‹ РЅР°С€Р»Рё РёРјРµРЅРЅРѕ С‚РѕС‚ Р°СЃСЃРµС‚, РєРѕС‚РѕСЂС‹Р№ РЅР°Рј РЅСѓР¶РµРЅ
-                if (asset != null && asset.name == "Path")
-				{
-					_json = asset;
-					UnityEditor.EditorUtility.SetDirty(this);
-					UnityEditor.AssetDatabase.SaveAssets();
-					UnityEditor.AssetDatabase.Refresh();
-                    //todo comment: РџРѕС‡РµРјСѓ РјС‹ Р·РґРµСЃСЊ РІС‹С…РѕРґРёРј, Р° РЅРµ РїСЂРѕРґРѕР»Р¶Р°РµРј РёС‚РµСЂРёСЂРѕРІР°С‚СЊСЃСЏ?
-                    // РџРѕС‚РѕРјСѓ-С‡С‚Рѕ РјС‹ СѓР¶Рµ РЅР°С€Р»Рё РЅСѓР¶РЅС‹Р№ Р°СЃСЃРµС‚
-                    return;
-				}
-			}
-		}
-
-		[Serializable]
-		class Wrapper 
-		{ 
-			public List<PositionSaver.Data> Records;
+    public class PositionSaver : MonoBehaviour
+    {
+        [Serializable]
+        public struct Data
+        {
+            public Vector3 Position;
+            public float Time;
         }
-		private void OnDestroy()
-		{
-			if (Records != null && Records.Count > 0)
-			{
-				var wrapper = new Wrapper { Records = Records };
-				string path = UnityEditor.AssetDatabase.GetAssetPath(_json);
-				var json = JsonUtility.ToJson(wrapper, true);
+        [SerializeField, ReadOnly,Tooltip("Для заполнения этого поля нужно воспользоваться контекстным меню в инспекторе и командой “Create File”")]
+        private TextAsset _json;
 
-				File.WriteAllText(path, json);
-				UnityEditor.AssetDatabase.Refresh();
-            }	
+        [SerializeField, HideInInspector]
+        public List<Data> Records;
+
+        private void Awake()
+        {
+
+
+            //todo comment: Что будет, если в теле этого условия не сделать выход из метода?
+            // Будет ошибка NullReferenceException, т.к. _json будет равен null
+            if (_json == null)
+            {
+                gameObject.SetActive(false);
+                Debug.LogError("Please, create TextAsset and add in field _json");
+                return;
+            }
+
+            JsonUtility.FromJsonOverwrite(_json.text, this);
+            //todo comment: Для чего нужна эта проверка (что она позволяет избежать)?
+            // Она позволяет избежать ошибки что коллекция Records не существует, а так она просто создаётся один раз и используется в дальнейшем
+            if (Records == null)
+                Records = new List<Data>(10);
+        }
+
+        private void OnDrawGizmos()
+        {
+            //todo comment: Зачем нужны эти проверки (что они позволляют избежать)?
+            // Позволяют избежать ошибки NullReferenceException, если в коллекции нет данных и нечего не будет рисоватся
+            if (Records == null || Records.Count == 0) return;
+            var data = Records;
+            var prev = data[0].Position;
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(prev, 0.3f);
+            //todo comment: Почему итерация начинается не с нулевого элемента?
+            // Потомуч-то нулевой элемент это стартовая точка, от которой рисуется линия
+            for (int i = 1; i < data.Count; i++)
+            {
+                var curr = data[i].Position;
+                Gizmos.DrawWireSphere(curr, 0.3f);
+                Gizmos.DrawLine(prev, curr);
+                prev = curr;
+            }
+        }
+
+#if UNITY_EDITOR
+        [ContextMenu("Create File")]
+        private void CreateFile()
+        {
+            //todo comment: Что происходит в этой строке?
+            // Создаётся файл Path.txt в папке Assets, Aplication.dataPath - это путь к папке Assets
+            var stream = File.Create(Path.Combine(Application.dataPath, "Path.txt"));
+            //todo comment: Подумайте для чего нужна эта строка? (а потом проверьте догадку, закомментировав) 
+            // Догадка: Dispoce кажется переводится как освободить/выбрасить, поэтому логично было-бы что эта строка удаляет данные из файла
+            // Ответ: Dispose завершает работу с файлом, созданным через File.Create()
+            stream.Dispose();
+            UnityEditor.AssetDatabase.Refresh();
+            //В Unity можно искать объекты по их типу, для этого используется префикс "t:"
+            //После нахождения, Юнити возвращает массив гуидов (которые в мета-файлах задаются, например)
+            var guids = UnityEditor.AssetDatabase.FindAssets("t:TextAsset");
+            foreach (var guid in guids)
+            {
+                //Этой командой можно получить путь к ассету через его гуид
+                var path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
+                //Этой командой можно загрузить сам ассет
+                var asset = UnityEditor.AssetDatabase.LoadAssetAtPath<TextAsset>(path);
+                //todo comment: Для чего нужны эти проверки?
+                // Типичная проверка на NullReferenceException и имя файла чтобы убедиться что мы нашли именно тот ассет, который нам нужен
+                if (asset != null && asset.name == "Path")
+                {
+                    _json = asset;
+                    UnityEditor.EditorUtility.SetDirty(this);
+                    UnityEditor.AssetDatabase.SaveAssets();
+                    UnityEditor.AssetDatabase.Refresh();
+                    //todo comment: Почему мы здесь выходим, а не продолжаем итерироваться?
+                    // Потому-что мы уже нашли нужный ассет
+                    return;
+                }
+            }
+        }
+
+        [Serializable]
+        class Wrapper
+        {
+            public List<PositionSaver.Data> Records;
+        }
+        private void OnDestroy()
+        {
+            if (Records != null && Records.Count > 0)
+            {
+                var wrapper = new Wrapper { Records = Records };
+                string path = UnityEditor.AssetDatabase.GetAssetPath(_json);
+                var json = JsonUtility.ToJson(wrapper, true);
+
+                File.WriteAllText(path, json);
+                UnityEditor.AssetDatabase.Refresh();
+            }
         }
 #endif
-	}
+    }
 }

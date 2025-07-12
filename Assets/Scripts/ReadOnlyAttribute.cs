@@ -1,4 +1,4 @@
-using UnityEngine;
+п»їusing UnityEngine;
 using UnityEditor.UIElements;
 
 
@@ -13,7 +13,7 @@ public class ReadOnlyAttribute : PropertyAttribute { }
 [CustomPropertyDrawer(typeof(ReadOnlyAttribute))]
 public class ReadOnlyPropertyDrawer : PropertyDrawer
 {
-    // Для старого интерфейса (IMGUI)
+    // Р”Р»СЏ СЃС‚Р°СЂРѕРіРѕ РёРЅС‚РµСЂС„РµР№СЃР° (IMGUI)
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
         GUI.enabled = false;
@@ -21,7 +21,7 @@ public class ReadOnlyPropertyDrawer : PropertyDrawer
         GUI.enabled = true;
     }
 
-    // Для нового интерфейса (UIElements)
+    // Р”Р»СЏ РЅРѕРІРѕРіРѕ РёРЅС‚РµСЂС„РµР№СЃР° (UIElements)
     public override VisualElement CreatePropertyGUI(SerializedProperty property)
     {
         var element = new PropertyField(property);
